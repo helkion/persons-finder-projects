@@ -97,7 +97,7 @@ public class PersonController implements Serializable{
         // John has the list of people around them, now they need to retrieve everybody's names to display in the app
         // API would be called using person or persons ids
      * */
-    @GetMapping(value = {"/names"})
+    @PostMapping(value = {"/names"})
     public List<Person> getNamesByIds(
     		@RequestBody() List<IndexField> indices) 
     				throws Exception {

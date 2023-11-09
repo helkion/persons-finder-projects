@@ -64,6 +64,23 @@ class PersonController @Autowired constructor(val personService: PersonsService)
         // John has the list of people around them, now they need to retrieve everybody's names to display in the app
         // API would be called using person or persons ids
      */
+    @PostMapping("/names")
+    fun getNamesByIds(@RequestBody indices: List<IndexField>): MutableIterable<Person>? {
+        println("getNamesByIds")
+        var lista: MutableIterable<Person>? = null
+        try {
+            val ids = indices.mapNotNull  { it.id }.toList()
+            lista = personService.findAllByIds(ids)
+        } catch (e: Exception) {
+            println("Register not found!")
+            e.printStackTrace()
+            // }
+            throw e
+        }
+
+        return lista
+    }
+
 
     @GetMapping("")
     fun getExample(): String {

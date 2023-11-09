@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service
 class PersonsServiceImpl : PersonsService {
 
     @Autowired
-    private val personRepository: PersonRepository? = null
+    private var personRepository: PersonRepository? = null
+
+    constructor(personRepository: PersonRepository?){
+        this.personRepository = personRepository;
+    }
 
     override fun getById(id: Long): Person {
         TODO("Not yet implemented")
@@ -21,5 +25,10 @@ class PersonsServiceImpl : PersonsService {
         return personRepository?.save(person) ?:
             throw Exception("PersonRepository is not available")
     }
+
+    override fun findAllByIds(ids: List<Long>): MutableIterable<Person>? {
+        return personRepository?.findAllById(ids)
+    }
+
 
 }
