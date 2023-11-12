@@ -1,41 +1,31 @@
 package com.persons.finder.configs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
 public class Config {
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	
+	@Autowired
+    private BasicAuthenticationEntryPoint authenticationEntryPoint;
     
     @Bean
     public SecurityFilterChain filterChain(
     		HttpSecurity http) 
     				throws Exception {
-        http.csrf().disable();
+        http
+	        .authorizeRequests()
+	            .antMatchers("/api/v1", "/error")
+	            .permitAll()
+	            .anyRequest().authenticated().and()
+	        .httpBasic().authenticationEntryPoint(authenticationEntryPoint).and()
+	        .csrf().disable();
+        
         return http.build();
     }
     
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000"); 
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
-
 }
